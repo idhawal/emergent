@@ -113,9 +113,15 @@ frontend/src/
 ### Backend (FastAPI)
 ```
 backend/
-├── server.py                 # FastAPI app + CORS
-├── requirements.txt          # Dependencies
-└── tests/                    # pytest suite (auto-run via CI)
+├── app/
+│   ├── main.py              # FastAPI app + CORS
+│   ├── routers/             # API endpoints (regression, knn, decision_tree, genetic_algorithm)
+│   ├── models/              # Pydantic schemas
+│   ├── services/            # ML logic (regression_service, knn_service, tree_service, ga_service)
+│   └── utils/               # Utilities (tree_parser)
+├── server.py                # Entry point
+├── requirements.txt         # Dependencies
+└── tests/                   # pytest suite
 ```
 
 ### Specification
@@ -145,6 +151,8 @@ yarn start
 ```bash
 cd backend
 pip install -r requirements.txt
+# Set CORS origin (optional, defaults to http://localhost:3000)
+export CORS_ORIGINS=http://localhost:3000
 python server.py
 # Runs on http://localhost:8000
 ```
