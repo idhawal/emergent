@@ -217,6 +217,19 @@ export default function TreePage() {
                   ]
             }
           />
+          {/* Feature Importance Bar Chart */}
+          {!loading && respA?.feature_importances && (
+            <FeatureImportanceChart 
+              importances={respA.feature_importances} 
+              title={s.compareMode && respB ? `A: Feature Importance` : "Feature Importance"}
+            />
+          )}
+          {!loading && s.compareMode && respB?.feature_importances && (
+            <FeatureImportanceChart 
+              importances={respB.feature_importances} 
+              title="B: Feature Importance"
+            />
+          )}
         </main>
       </div>
     </PageShell>
@@ -323,5 +336,37 @@ function renderNode({ nodeDatum, toggleNode }) {
         </text>
       )}
     </g>
+  );
+}
+
+function FeatureImportanceChart({ importances, title }) {
+  const sorted = Object.entries(importances)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8); // Show top 8 features
+
+  const maxImportance = Math.max(...sorted.map(([, v]) => v));
+
+  return (
+    <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
+      <div className="text-[11px] uppercase tracking-[0.18em] text-neutral-500 font-mono mb-3">{title}</div>
+      <div className="space-y-2">
+        {sorted.map(([feature, importance], idx) => (
+          <div key={idx} className="flex items-center gap-2">
+            <span className="text-xs text-neutral-400 min-w-[80px] truncate">{feature}</span>
+            <div className="flex-1 h-5 bg-neutral-950/50 rounded border border-neutral-800 overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all"
+                style={{
+                  width: `${(importance / maxImportance) * 100}%`,
+                }}
+              />
+            </div>
+            <span className="text-[10px] font-mono text-amber-300 min-w-[45px] text-right">
+              {(importance * 100).toFixed(1)}%
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
