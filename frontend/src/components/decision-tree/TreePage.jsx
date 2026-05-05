@@ -283,7 +283,7 @@ function TreeCard({ title, resp, loading, testid, large }) {
         <div className="text-[10px] font-mono text-neutral-500">acc {resp.accuracy} · depth {resp.depth} · leaves {resp.n_leaves}</div>
       </div>
       <div
-        className={`${large ? "h-[560px]" : "h-[420px]"} rounded bg-neutral-950/50 border border-neutral-800 overflow-hidden`}
+        className={`${large ? "h-[560px]" : "h-[420px]"} rounded bg-neutral-950/50 border border-neutral-800 overflow-auto`}
         data-testid={`${testid}-canvas`}
       >
         <Tree
