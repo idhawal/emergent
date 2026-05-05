@@ -14,6 +14,7 @@ async def decision_tree_endpoint(request: DecisionTreeRequest):
         max_depth=request.max_depth,
         min_samples_split=request.min_samples_split,
         min_samples_leaf=request.min_samples_leaf,
-        dataset=request.dataset
+        dataset=request.dataset,
+        uploaded_data=request.uploaded_data,
     )
     return result

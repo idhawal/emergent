@@ -18,9 +18,9 @@ import {
 import { useDebounce } from "@/hooks/useDebounce";
 import { useKNNStore, useUIStore } from "@/store/store";
 import { runKNN } from "@/lib/api";
+import DatasetSelector from "@/components/shared/DatasetSelector";
 
-const DATASETS_CLASS = ["moons", "circles", "blobs"];
-const DATASETS_REG = ["sine"];
+const KNN_DATASETS = ["moons", "circles", "blobs"];
 
 const CLASS_COLORS = ["#fbbf24", "#34d399", "#60a5fa", "#f472b6"]; // amber, emerald, sky, pink
 
@@ -30,6 +30,7 @@ export default function KNNPage() {
   const [resp, setResp] = useState(null);
   const [respCompare, setRespCompare] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
 
   const debouncedReq = useDebounce(
     {
@@ -39,30 +40,38 @@ export default function KNNPage() {
       task: s.task,
       dataset: s.dataset,
       test_point: s.test_point,
+      uploaded_data: s.uploadedDataset ? s.uploadedDataset.rows : null,
     },
     300
   );
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
     setLoading(true);
+    setIsDemo(false);
     Promise.all([
-      runKNN(debouncedReq),
+      runKNN(debouncedReq, controller.signal),
       s.compareMode
         ? runKNN({
             ...debouncedReq,
             weights: debouncedReq.weights === "uniform" ? "distance" : "uniform",
-          })
+          }, controller.signal)
         : Promise.resolve(null),
-    ]).then(([a, b]) => {
-      if (!cancelled) {
-        setResp(a);
-        setRespCompare(b);
+    ])
+      .then(([a, b]) => {
+        setResp(a.data);
+        setRespCompare(b?.data ?? null);
+        setIsDemo(a.isDemo || Boolean(b?.isDemo));
         setLoading(false);
-      }
-    });
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          console.error("Unexpected error:", err);
+          setLoading(false);
+        }
+      });
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, [debouncedReq, s.compareMode]);
 
@@ -71,8 +80,6 @@ export default function KNNPage() {
     const p = e.points[0];
     s.set({ test_point: [p.x, p.y] });
   };
-
-  const datasetOptions = s.task === "classification" ? DATASETS_CLASS : DATASETS_REG;
 
   return (
     <PageShell algorithm="knn">
@@ -99,7 +106,8 @@ export default function KNNPage() {
               onValueChange={(v) =>
                 s.set({
                   task: v,
-                  dataset: v === "classification" ? "moons" : "sine",
+                  dataset: "moons",
+                  uploadedDataset: null,
                   test_point: null,
                 })
               }
@@ -156,16 +164,17 @@ export default function KNNPage() {
           </div>
 
           <Field label="Dataset">
-            <Select value={s.dataset} onValueChange={(v) => s.set({ dataset: v, test_point: null })}>
-              <SelectTrigger data-testid="select-dataset" className="bg-neutral-900 border-neutral-700 text-neutral-100">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-700 text-neutral-100">
-                {datasetOptions.map((d) => (
-                  <SelectItem key={d} value={d}>{d}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <DatasetSelector
+              availableDatasets={KNN_DATASETS}
+              value={s.dataset}
+              onChange={(name, uploadedData) => {
+                if (name === "__uploaded__" && uploadedData) {
+                  s.set({ dataset: "__uploaded__", uploadedDataset: uploadedData, test_point: null });
+                } else {
+                  s.set({ dataset: name, uploadedDataset: null, test_point: null });
+                }
+              }}
+            />
           </Field>
 
           <div className="flex items-center justify-between">
@@ -187,6 +196,12 @@ export default function KNNPage() {
         </Sidebar>
 
         <main className="flex-1 flex flex-col">
+          {isDemo && (
+            <div className="mx-4 md:mx-6 mt-4 rounded-md border border-amber-400/20 bg-amber-400/5 px-4 py-2.5 text-xs text-amber-300 font-mono">
+              Backend unreachable - displaying demo data. Set{" "}
+              <code className="text-amber-200">REACT_APP_BACKEND_URL</code> to connect.
+            </div>
+          )}
           <div className="flex-1 p-4 md:p-6 space-y-4">
             <div className="rounded-md bg-neutral-900/40 border border-neutral-800 px-3 py-2 flex items-center gap-2 text-xs text-neutral-400">
               <MousePointerClick className="h-3.5 w-3.5 text-amber-300" />

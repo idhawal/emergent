@@ -27,6 +27,7 @@ export default function GAPage() {
   const setTheoryOpen = useUIStore((u) => u.setTheoryOpen);
   const [resp, setResp] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
   const [genIdx, setGenIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
   const playRef = useRef(null);
@@ -46,16 +47,24 @@ export default function GAPage() {
   );
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
     setLoading(true);
     setPlaying(false);
-    runGA(debouncedReq).then((r) => {
-      if (cancelled) return;
-      setResp(r);
-      setGenIdx(0);
-      setLoading(false);
-    });
-    return () => { cancelled = true; };
+    setIsDemo(false);
+    runGA(debouncedReq, controller.signal)
+      .then(({ data, isDemo }) => {
+        setResp(data);
+        setIsDemo(isDemo);
+        setGenIdx(0);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          console.error("Unexpected error:", err);
+          setLoading(false);
+        }
+      });
+    return () => { controller.abort(); };
   }, [debouncedReq]);
 
   // function change → save ghost
@@ -163,6 +172,12 @@ export default function GAPage() {
         </Sidebar>
 
         <main className="flex-1 flex flex-col">
+          {isDemo && (
+            <div className="mx-4 md:mx-6 mt-4 rounded-md border border-amber-400/20 bg-amber-400/5 px-4 py-2.5 text-xs text-amber-300 font-mono">
+              Backend unreachable - displaying demo data. Set{" "}
+              <code className="text-amber-200">REACT_APP_BACKEND_URL</code> to connect.
+            </div>
+          )}
           <div className="flex-1 p-4 md:p-6 space-y-4">
             <div className="grid gap-4 lg:grid-cols-5">
               <div className="lg:col-span-3 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">

@@ -21,6 +21,7 @@ import { AlertTriangle, RotateCcw, Play } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useRegressionStore, useUIStore } from "@/store/store";
 import { runRegression } from "@/lib/api";
+import DatasetSelector from "@/components/shared/DatasetSelector";
 
 const ALGOS = [
   { v: "linear_gd", label: "Linear (Gradient Descent)" },
@@ -30,6 +31,7 @@ const ALGOS = [
   { v: "elastic_net", label: "Elastic Net" },
 ];
 const PENALTIES = [0.01, 0.1, 1, 10, 100];
+const REGRESSION_DATASETS = ["linear", "sine", "quadratic"];
 
 // log slider helpers (0.0001..1.0 → 0..1)
 const lrToSlider = (lr) => {
@@ -47,6 +49,7 @@ export default function RegressionPage() {
 
   const [resp, setResp] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
   const [reqId, setReqId] = useState(0);
 
   const debouncedReq = useDebounce(
@@ -59,21 +62,30 @@ export default function RegressionPage() {
       l1_ratio: s.l1_ratio,
       noise: s.noise,
       early_stopping: s.early_stopping,
+      dataset: s.dataset,
+      uploaded_data: s.uploadedDataset ? s.uploadedDataset.rows : null,
     },
     300
   );
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
     setLoading(true);
-    runRegression(debouncedReq).then((r) => {
-      if (!cancelled) {
-        setResp(r);
+    setIsDemo(false);
+    runRegression(debouncedReq, controller.signal)
+      .then(({ data, isDemo }) => {
+        setResp(data);
+        setIsDemo(isDemo);
         setLoading(false);
-      }
-    });
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          console.error("Unexpected error:", err);
+          setLoading(false);
+        }
+      });
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, [debouncedReq, reqId]);
 
@@ -114,6 +126,8 @@ export default function RegressionPage() {
                     l1_ratio: 0.5,
                     noise: 0.3,
                     early_stopping: false,
+                    dataset: "linear",
+                    uploadedDataset: null,
                   })
                 }
               >
@@ -122,6 +136,20 @@ export default function RegressionPage() {
             </div>
           }
         >
+          <Field label="Dataset">
+            <DatasetSelector
+              availableDatasets={REGRESSION_DATASETS}
+              value={s.dataset}
+              onChange={(name, uploadedData) => {
+                if (name === "__uploaded__" && uploadedData) {
+                  s.set({ dataset: "__uploaded__", uploadedDataset: uploadedData });
+                } else {
+                  s.set({ dataset: name, uploadedDataset: null });
+                }
+              }}
+            />
+          </Field>
+
           {/* Algorithm */}
           <Field label="Algorithm">
             <Select value={s.algo} onValueChange={(v) => s.set({ algo: v })}>
@@ -237,6 +265,12 @@ export default function RegressionPage() {
         </Sidebar>
 
         <main className="flex-1 flex flex-col">
+          {isDemo && (
+            <div className="mx-4 md:mx-6 mt-4 rounded-md border border-amber-400/20 bg-amber-400/5 px-4 py-2.5 text-xs text-amber-300 font-mono">
+              Backend unreachable - displaying demo data. Set{" "}
+              <code className="text-amber-200">REACT_APP_BACKEND_URL</code> to connect.
+            </div>
+          )}
           <div className="flex-1 p-4 md:p-6 space-y-4">
             {resp?.stopped_at_epoch != null && (
               <Alert

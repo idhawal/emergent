@@ -6,7 +6,7 @@ export default function PageShell({ algorithm, children }) {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 selection:bg-amber-300/30 selection:text-amber-50">
       <Navbar />
-      <TheoryDrawer algorithm={algorithm} />
+      {algorithm && <TheoryDrawer algorithm={algorithm} />}
       <Toaster theme="dark" position="top-right" />
       {children}
     </div>

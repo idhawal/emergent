@@ -3,6 +3,9 @@ Update frontend/src/lib/api.js to use real API calls (the README has the exact c
 # IDE and editors
 .idea/
 .vscode/
+.emergent/
+frontend/plugins/
+.gitconfig
 
 # Dependencies
 node_modules/

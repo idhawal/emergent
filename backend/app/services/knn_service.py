@@ -109,12 +109,22 @@ def run_knn(
     weights: str,
     task: str,
     dataset: str,
-    test_point: Optional[List[float]] = None
+    test_point: Optional[List[float]] = None,
+    uploaded_data: Optional[List[dict]] = None,
 ) -> dict:
     """Run KNN algorithm."""
     
-    # Generate dataset
-    X_train, y_train = generate_dataset(dataset, n_samples=200)
+    if uploaded_data:
+        import pandas as pd
+
+        df = pd.DataFrame(uploaded_data)
+        numeric_cols = df.select_dtypes(include="number").columns.tolist()
+        if len(numeric_cols) < 3:
+            raise ValueError("Uploaded CSV for KNN must include at least 3 numeric columns.")
+        X_train = df[numeric_cols[:2]].to_numpy(dtype=float)
+        y_train = df[numeric_cols[-1]].to_numpy(dtype=float)
+    else:
+        X_train, y_train = generate_dataset(dataset, n_samples=200)
     
     # Generate meshgrid for decision boundary
     mesh_xx, mesh_yy, mesh_zz = generate_meshgrid(

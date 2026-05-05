@@ -14,6 +14,8 @@ class RegressionRequest(BaseModel):
     l1_ratio: Annotated[float, Field(ge=0.0, le=1.0)]
     noise: Annotated[float, Field(ge=0.0, le=1.0)]
     early_stopping: bool = False
+    dataset: Optional[str] = None
+    uploaded_data: Optional[List[dict]] = None
 
 
 class RegressionResponse(BaseModel):
@@ -34,8 +36,9 @@ class KNNRequest(BaseModel):
     metric: Literal["euclidean", "manhattan"]
     weights: Literal["uniform", "distance"]
     task: Literal["classification", "regression"]
-    dataset: Literal["moons", "circles", "blobs", "sine"]
+    dataset: str
     test_point: Optional[List[float]] = None
+    uploaded_data: Optional[List[dict]] = None
 
 
 class KNNResponse(BaseModel):
@@ -56,7 +59,8 @@ class DecisionTreeRequest(BaseModel):
     max_depth: Optional[Annotated[int, Field(ge=1, le=10)]] = None
     min_samples_split: Annotated[int, Field(ge=2, le=20)]
     min_samples_leaf: Annotated[int, Field(ge=1, le=20)]
-    dataset: Literal["iris", "breast_cancer", "blobs"]
+    dataset: str
+    uploaded_data: Optional[List[dict]] = None
 
 
 class TreeNodeAttributes(BaseModel):

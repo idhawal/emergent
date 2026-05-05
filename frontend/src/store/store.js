@@ -14,6 +14,8 @@ export const useRegressionStore = create((set) => ({
   l1_ratio: 0.5,
   noise: 0.3,
   early_stopping: false,
+  dataset: "linear",
+  uploadedDataset: null,
   set: (patch) => set(patch),
 }));
 
@@ -23,6 +25,7 @@ export const useKNNStore = create((set) => ({
   weights: "uniform",
   task: "classification",
   dataset: "moons",
+  uploadedDataset: null,
   test_point: null,
   compareMode: false,
   set: (patch) => set(patch),
@@ -35,6 +38,7 @@ export const useTreeStore = create((set) => ({
   min_samples_split: 2,
   min_samples_leaf: 1,
   dataset: "iris",
+  uploadedDataset: null,
   compareMode: false,
   set: (patch) => set(patch),
 }));

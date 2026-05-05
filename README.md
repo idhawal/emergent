@@ -1,220 +1,146 @@
-# ML Visualizer — Interactive Academic GUI
+# ML Visualizer
 
-> **Visualize, tune, and reason about four families of ML algorithms.**  
-> Built strictly to spec with all algorithms implemented from scratch.
+An interactive web application for exploring and tuning four families of machine learning algorithms. Adjust parameters in real time, watch decision boundaries redraw, and inspect the math behind each model through built-in theory panels.
 
----
-
-## 🎯 Overview
-
-An interactive GUI for visualizing and tuning **Regression**, **K-Nearest Neighbors**, **Decision Trees**, and **Genetic Algorithms**. All core algorithms are implemented from scratch using NumPy (no sklearn models).
-
-### ✨ Key Features
-
-- ✅ **100% From-Scratch Implementation** - All 13 algorithms built without sklearn models
-- ✅ **32 Adjustable Parameters** - Real-time tuning with 300ms debounce
-- ✅ **15+ Interactive Visualizations** - Plotly charts + react-d3-tree
-- ✅ **10 Enhancements** - Early stopping, feature importance, compare modes
-- ✅ **107 Passing Tests** - Comprehensive unit, integration, and validation tests
-- ✅ **Theory Drawers** - KaTeX equations and parameter guides on every page
+**Live demo ->** [YOUR_VERCEL_URL](https://YOUR_VERCEL_URL)
 
 ---
 
-## 📸 Screenshots
+## Algorithms
 
-### Regression — Linear, Polynomial, Ridge, Lasso, Elastic Net
-![Regression](screenshots/regression.png)
+| Module | What you can explore |
+|---|---|
+| **Regression** | Linear - Polynomial - Ridge - Lasso - Elastic Net with live gradient descent and early stopping |
+| **K-Nearest Neighbors** | Interactive 2D decision boundaries - click to drop test points - Euclidean vs Manhattan distance - uniform vs distance-weighted voting |
+| **Decision Trees** | CART classifier and regressor - Gini vs Entropy side-by-side - live depth pruning - feature importance chart |
+| **Genetic Algorithms** | Real-coded GA with SBX crossover - polynomial mutation - Sphere / Rosenbrock / Rastrigin benchmark functions - play / step / ghost-overlay animation |
 
-### K-Nearest Neighbors — Interactive Boundary Classification
-![KNN](screenshots/knn.png)
-
-### Decision Trees — CART with Gini / Entropy
-![Decision Trees](screenshots/decision-tree.png)
-
-### Genetic Algorithms — Real-Coded GA with SBX
-![Genetic Algorithms](screenshots/genetic-algorithm.png)
+Every page includes a **Theory drawer** with KaTeX-rendered equations and parameter guides.
 
 ---
 
-## 🚀 Quick Start
+## Tech Stack
 
-### Prerequisites
-- Python 3.11+
-- Node.js 16+
-- yarn
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Tailwind CSS, shadcn/ui |
+| Visualisation | Plotly.js, react-d3-tree |
+| State | Zustand |
+| Backend | FastAPI, Python 3.11 |
+| ML / Math | NumPy (all algorithms implemented from scratch - no sklearn models) |
+| Validation | Pydantic v2 |
+| Tests | pytest (107 tests) |
+| Deployment | Vercel (frontend) + Render (backend) |
 
-### Installation & Running
+---
 
-**Backend:**
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="screenshots/regression.png" alt="Regression" /></td>
+    <td><img src="screenshots/knn.png" alt="KNN" /></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/decision-tree.png" alt="Decision Trees" /></td>
+    <td><img src="screenshots/genetic-algorithm.png" alt="Genetic Algorithms" /></td>
+  </tr>
+</table>
+
+---
+
+## Running Locally
+
+**Requirements:** Python 3.11+, Node.js 18+, yarn
+
 ```bash
+# Backend
 cd backend
 pip install -r requirements.txt
-python server.py
-# Runs on http://localhost:8000
-```
+python server.py          # http://localhost:8000
 
-**Frontend:**
-```bash
+# Frontend (new terminal)
 cd frontend
 yarn install
-yarn start
-# Opens http://localhost:3000
+echo "REACT_APP_BACKEND_URL=http://localhost:8000" > .env.local
+yarn start                # http://localhost:3000
 ```
+
+**Backend health check:** `curl http://localhost:8000/health`
 
 ---
 
-## 🧪 Testing
+## Datasets
+
+Built-in datasets are served by the backend:
+
+| Name | Type | Source |
+|---|---|---|
+| `linear` | Regression | Synthetic (NumPy) |
+| `sine` | Regression | Synthetic (NumPy) |
+| `quadratic` | Regression | Synthetic (NumPy) |
+| `iris` | Classification | sklearn |
+| `breast_cancer` | Classification | sklearn |
+| `moons` | Classification | sklearn |
+| `circles` | Classification | sklearn |
+| `blobs` | Classification/Regression | sklearn |
+
+You can also upload your own `.csv` file from any algorithm page.
+
+---
+
+## Tests
 
 ```bash
 cd backend
 pytest tests/ -v
-# 107 tests should pass
+# 107 tests: unit - integration - from-scratch verification - Pydantic validation
 ```
 
-**Test Coverage:**
-- ✅ 23 from-scratch verification tests
-- ✅ 40 Pydantic validation tests (HTTP 422)
-- ✅ 30 integration tests (end-to-end)
-- ✅ 14 existing algorithm tests
-
----
-
-## 🎓 Core Algorithms (All From Scratch)
-
-### 1. Regression (5 algorithms)
-- **Linear Gradient Descent** - Custom NumPy implementation
-- **Polynomial Regression** - Manual feature generation + GD
-- **Ridge Regression** - L2 regularization in gradient
-- **Lasso Regression** - Coordinate descent + soft thresholding
-- **Elastic Net** - Combined L1/L2 penalties
-
-### 2. K-Nearest Neighbors
-- Custom distance metrics (Euclidean, Manhattan)
-- Weighted voting (Uniform, Distance-weighted)
-- Classification & Regression modes
-
-### 3. Decision Trees (2 algorithms)
-- **Decision Tree Classifier** - CART with Gini/Entropy
-- **Decision Tree Regressor** - Variance reduction
-- Custom implementations: Gini, Entropy, Information Gain, tree building
-
-### 4. Genetic Algorithms
-- Real-coded GA with SBX crossover
-- Polynomial mutation
-- Tournament selection
-- Benchmark functions: Sphere, Rosenbrock, Rastrigin
-
----
-
-## 🎯 Enhancements
-
-1. **Early Stopping** (Regression) - Halts training if cost increases 5x consecutively
-2. **Lasso Zero-Coefficient Tracker** - Live counter for feature selection
-3. **KNN Boundary Comparison** - Uniform vs Distance-weighted side-by-side
-4. **Decision Tree Pruning** - Real-time node grayout as depth changes
-5. **Gini vs Entropy Comparison** - Side-by-side trees
-6. **Feature Importance Chart** - Top 8 features ranked
-7. **Interactive Test Points** - Click to place, see neighbors
-8. **GA Animation Controls** - Play/Pause/Step through generations
-9. **GA Ghost Overlay** - Compare different parameter settings
-10. **Real-time Metrics Panel** - Live stats on all pages
-
----
-
-## 🏗 Architecture
-
-### Frontend (React 19)
-- **Framework:** React with Vite
-- **Styling:** Tailwind CSS
-- **Components:** Shadcn UI
-- **Charts:** Plotly.js, react-d3-tree
-- **State:** Zustand
-- **HTTP:** Axios with 300ms debounce
-
-### Backend (FastAPI)
-- **Framework:** Python 3.11+, FastAPI
-- **ML:** NumPy (all algorithms from scratch)
-- **Validation:** Pydantic v2
-- **Testing:** pytest (107 tests)
-- **Server:** uvicorn
-
----
-
-## 📋 Parameter Reference
-
-| Algorithm | Parameters |
-|-----------|-----------|
-| **Regression** | algo, learning_rate, epochs, poly_degree, penalty, l1_ratio, noise, early_stopping |
-| **KNN** | k, metric, weights, task, dataset |
-| **Decision Trees** | task, criterion, max_depth, min_samples_split, min_samples_leaf, dataset |
-| **Genetic Algorithms** | function, pop_size, mutation_rate, crossover_rate, generations, eta_m, eta_c |
-
----
-
-## 📖 Documentation
-
-- **spec.md** - Master specification (single source of truth)
-- **FINAL_SUMMARY.md** - Implementation summary and test results
-- **VERIFICATION_GUIDE.md** - How to verify from-scratch implementation
-- **Theory Drawers** - In-app documentation with KaTeX equations
-
----
-
-## 🛠 Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | React 19, Tailwind CSS, Shadcn UI, Plotly.js, react-d3-tree, Zustand |
-| **Backend** | FastAPI, NumPy, Pydantic |
-| **Testing** | pytest, pytest-asyncio |
-
----
-
-## ✅ Verification
-
-To verify all algorithms are from scratch:
+To verify that no sklearn models are used in the algorithm implementations:
 
 ```bash
-# Check no sklearn models are imported
-grep -r "from sklearn.linear_model import" backend/app/services/
-grep -r "from sklearn.neighbors import" backend/app/services/
-grep -r "from sklearn.tree import DecisionTree" backend/app/services/
-# Should return NO results
-
-# Run from-scratch verification tests
-cd backend
-pytest tests/test_from_scratch.py -v
-# All 23 tests should pass
+rg "from sklearn.linear_model import|from sklearn.neighbors import|from sklearn.tree import DecisionTree" backend/app/services/
+# Should return no results
 ```
 
 ---
 
-## 📊 Evaluation Criteria
+## Deployment
 
-| Criterion | Score | Status |
-|-----------|-------|--------|
-| GUI Quality & Usability | 95/100 | ✅ |
-| Adjustable Parameters | 100/100 | ✅ |
-| Graphical Representation | 98/100 | ✅ |
-| Additional Enhancements | 100/100 | ✅ |
-| Documentation | 95/100 | ✅ |
-| **From-Scratch Implementation** | **100%** | ✅ |
-| **Testing & Debugging** | **100%** | ✅ |
-| | | |
-| **FINAL GRADE** | **97.6/100** | **A+** ✅ |
+**Vercel (frontend)**
+1. Connect the `frontend/` directory
+2. Set environment variable: `REACT_APP_BACKEND_URL=https://<your-render-service>.onrender.com`
+
+**Render (backend)**
+1. Connect the `backend/` directory
+2. Build command: `pip install -r requirements.txt`
+3. Start command: `python server.py`
+4. Optionally set: `FRONTEND_URL=https://<your-vercel-url>.vercel.app`
 
 ---
 
-## 📝 License
+## Project Structure
 
-This project is part of an academic ML visualization lab.
+```
+├── frontend/
+│   ├── src/
+│   │   ├── components/       # React pages and shared UI
+│   │   ├── store/store.js    # Zustand state
+│   │   ├── lib/api.js        # Backend client with demo-data fallback
+│   │   └── hooks/            # useDebounce
+│   └── public/
+└── backend/
+    ├── app/
+    │   ├── routers/          # FastAPI route handlers
+    │   ├── services/         # From-scratch algorithm implementations
+    │   ├── models/schemas.py # Pydantic request/response models
+    │   └── main.py           # App factory + CORS
+    └── tests/                # pytest suite
+```
 
 ---
 
-## 👨‍💻 Author
+## License
 
-Built with specification-driven architecture. All algorithms implemented from scratch.
-
----
-
-**Made with Emergent** 🌱
+MIT

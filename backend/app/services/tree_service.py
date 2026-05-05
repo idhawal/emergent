@@ -1,7 +1,8 @@
 import numpy as np
+import pandas as pd
 from sklearn.datasets import load_iris, load_breast_cancer, make_blobs
 from sklearn.model_selection import train_test_split
-from typing import Dict
+from typing import Dict, Optional, List
 from app.services.custom_tree import CustomDecisionTreeClassifier, CustomDecisionTreeRegressor
 
 
@@ -30,15 +31,26 @@ def run_decision_tree(
     max_depth: int,
     min_samples_split: int,
     min_samples_leaf: int,
-    dataset: str
+    dataset: str,
+    uploaded_data: Optional[List[dict]] = None,
 ) -> dict:
     """
     Run decision tree algorithm.
     IMPLEMENTED FROM SCRATCH - NO SKLEARN TREE USED.
     """
     
-    # Load dataset
-    X, y, feature_names = load_dataset(dataset)
+    if uploaded_data:
+        df = pd.DataFrame(uploaded_data)
+        numeric_cols = df.select_dtypes(include="number").columns.tolist()
+        if len(numeric_cols) < 2:
+            raise ValueError("Uploaded CSV for decision tree must include at least 2 numeric columns.")
+        feature_cols = numeric_cols[:-1]
+        target_col = numeric_cols[-1]
+        X = df[feature_cols].to_numpy(dtype=float)
+        y = df[target_col].to_numpy(dtype=float)
+        feature_names = feature_cols
+    else:
+        X, y, feature_names = load_dataset(dataset)
     
     # Split data
     X_train, X_test, y_train, y_test = train_test_split(

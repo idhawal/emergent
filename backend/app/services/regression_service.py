@@ -333,15 +333,21 @@ def run_regression(
     penalty: float,
     l1_ratio: float,
     noise: float,
-    early_stopping: bool
+    early_stopping: bool,
+    x_data: Optional[np.ndarray] = None,
+    y_data: Optional[np.ndarray] = None,
 ) -> dict:
     """
     Run regression algorithm based on parameters.
     ALL ALGORITHMS IMPLEMENTED FROM SCRATCH - NO SKLEARN.
     """
     
-    # Generate synthetic data
-    X, y = generate_synthetic_data(80, noise, poly_degree)
+    # Resolve dataset (uploaded/preset) if provided, otherwise synthetic fallback.
+    if x_data is not None and y_data is not None:
+        X = np.asarray(x_data, dtype=float).reshape(-1, 1)
+        y = np.asarray(y_data, dtype=float)
+    else:
+        X, y = generate_synthetic_data(80, noise, poly_degree)
     
     coefficients = []
     cost_history = []

@@ -1,20 +1,20 @@
-// API layer for ML Visualizer backend.
-// Makes HTTP requests to FastAPI backend per spec.md §5 contracts.
+// api.js - ML Visualizer backend client
+// Falls back to deterministic mock data when backend is unreachable.
 
-const API_BASE = process.env.REACT_APP_BACKEND_URL 
+const API_BASE = process.env.REACT_APP_BACKEND_URL
   ? `${process.env.REACT_APP_BACKEND_URL}/api`
   : null;
 
-if (!API_BASE) {
-  console.warn("[api.js] REACT_APP_BACKEND_URL is not set — using mock data.");
+export const isBackendConfigured = Boolean(API_BASE);
+
+if (!isBackendConfigured) {
+  console.info("[api] No REACT_APP_BACKEND_URL - running in demo mode.");
 }
 
-// Mock data generators
-function generateMockRegressionData() {
+function mockRegression() {
   const x = Array.from({ length: 50 }, (_, i) => i * 0.5);
-  const y_true = x.map(v => 2 * v + 0.5 + (Math.random() - 0.5) * 2);
-  const y_pred = x.map(v => 2 * v + 0.5);
-  
+  const y_true = x.map((v) => 2 * v + 0.5 + (Math.random() - 0.5) * 2);
+  const y_pred = x.map((v) => 2 * v + 0.5);
   return {
     scatter_x: x,
     scatter_y: y_true,
@@ -27,26 +27,24 @@ function generateMockRegressionData() {
   };
 }
 
-function generateMockKNNData() {
-  const points = Array.from({ length: 100 }, () => [
+function mockKNN() {
+  const pts = Array.from({ length: 100 }, () => [
     (Math.random() - 0.5) * 4,
-    (Math.random() - 0.5) * 4
+    (Math.random() - 0.5) * 4,
   ]);
-  const labels = points.map(p => (p[0] * p[0] + p[1] * p[1] < 2 ? 0 : 1));
-  
-  const gridSize = 30;
-  const mesh_xx = Array.from({ length: gridSize }, (_, i) => 
-    Array.from({ length: gridSize }, (_, j) => -2 + (j / gridSize) * 4)
+  const labels = pts.map((p) => (p[0] ** 2 + p[1] ** 2 < 2 ? 0 : 1));
+  const G = 30;
+  const mesh_xx = Array.from({ length: G }, () =>
+    Array.from({ length: G }, (_, j) => -2 + (j / G) * 4)
   );
-  const mesh_yy = Array.from({ length: gridSize }, (_, i) => 
-    Array.from({ length: gridSize }, () => -2 + (i / gridSize) * 4)
+  const mesh_yy = Array.from({ length: G }, (_, i) =>
+    Array.from({ length: G }, () => -2 + (i / G) * 4)
   );
-  const mesh_zz = mesh_xx.map((row, i) => 
-    row.map((x, j) => (x * x + mesh_yy[i][j] * mesh_yy[i][j] < 2 ? 0 : 1))
+  const mesh_zz = mesh_xx.map((row, i) =>
+    row.map((x, j) => (x ** 2 + mesh_yy[i][j] ** 2 < 2 ? 0 : 1))
   );
-  
   return {
-    train_points: points,
+    train_points: pts,
     train_labels: labels,
     mesh_xx,
     mesh_yy,
@@ -56,7 +54,7 @@ function generateMockKNNData() {
   };
 }
 
-function generateMockTreeData() {
+function mockTree() {
   return {
     tree_json: {
       name: "petal_length <= 2.45",
@@ -97,38 +95,29 @@ function generateMockTreeData() {
   };
 }
 
-function generateMockGAData() {
-  const generations = 50;
-  const history = [];
-  
-  for (let i = 0; i < generations; i++) {
-    const best_fitness = 100 * Math.exp(-i / 10) + 0.01;
-    const avg_fitness = 200 * Math.exp(-i / 15) + 5;
-    const points = Array.from({ length: 30 }, () => [
+function mockGA() {
+  const gens = 50;
+  const history = Array.from({ length: gens }, (_, i) => {
+    const pts = Array.from({ length: 30 }, () => [
       (Math.random() - 0.5) * 4 * Math.exp(-i / 30),
-      (Math.random() - 0.5) * 4 * Math.exp(-i / 30)
+      (Math.random() - 0.5) * 4 * Math.exp(-i / 30),
     ]);
-    const fitness_values = points.map(p => p[0] * p[0] + p[1] * p[1]);
-    const best_idx = fitness_values.indexOf(Math.min(...fitness_values));
-    
-    history.push({
+    const fitness = pts.map((p) => p[0] ** 2 + p[1] ** 2);
+    const bestIdx = fitness.indexOf(Math.min(...fitness));
+    return {
       generation: i,
-      best_fitness,
-      avg_fitness,
-      points,
-      fitness_values,
-      best_point: points[best_idx]
-    });
-  }
-  
-  const gridSize = 40;
+      best_fitness: 100 * Math.exp(-i / 10) + 0.01,
+      avg_fitness: 200 * Math.exp(-i / 15) + 5,
+      points: pts,
+      fitness_values: fitness,
+      best_point: pts[bestIdx],
+    };
+  });
+  const G = 40;
   const span = 5;
-  const contour_x = [Array.from({ length: gridSize }, (_, i) => -span + (i / gridSize) * 2 * span)];
-  const contour_y = Array.from({ length: gridSize }, (_, i) => [-span + (i / gridSize) * 2 * span]);
-  const contour_z = contour_y.map(row => 
-    contour_x[0].map(x => x * x + row[0] * row[0])
-  );
-  
+  const contour_x = [Array.from({ length: G }, (_, i) => -span + (i / G) * 2 * span)];
+  const contour_y = Array.from({ length: G }, (_, i) => [-span + (i / G) * 2 * span]);
+  const contour_z = contour_y.map((row) => contour_x[0].map((x) => x ** 2 + row[0] ** 2));
   return {
     history,
     contour_x,
@@ -139,137 +128,79 @@ function generateMockGAData() {
   };
 }
 
-// ---------- /api/regression ----------
-export async function runRegression(req) {
-  if (!API_BASE) {
-    // Return mock data
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return generateMockRegressionData();
+async function apiFetch(path, body, signal) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    signal,
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
   }
-  
+  return response.json();
+}
+
+async function withFallback(path, body, mockFn, signal) {
+  if (!isBackendConfigured) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    return { data: mockFn(), isDemo: true };
+  }
   try {
-    const response = await fetch(`${API_BASE}/regression`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(req),
-    });
-    if (!response.ok) {
-      console.error(`Regression API error: ${response.status}`);
-      return generateMockRegressionData();
-    }
-    return response.json();
-  } catch (error) {
-    console.error("Regression API network error:", error);
-    return generateMockRegressionData();
+    const data = await apiFetch(path, body, signal);
+    return { data, isDemo: false };
+  } catch (err) {
+    if (err.name === "AbortError") throw err;
+    console.warn(`[api] ${path} failed, using demo data:`, err.message);
+    return { data: mockFn(), isDemo: true };
   }
 }
 
-// ---------- /api/knn ----------
-export async function runKNN(req) {
-  if (!API_BASE) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return generateMockKNNData();
-  }
-  
-  try {
-    const response = await fetch(`${API_BASE}/knn`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(req),
-    });
-    if (!response.ok) {
-      console.error(`KNN API error: ${response.status}`);
-      return generateMockKNNData();
-    }
-    return response.json();
-  } catch (error) {
-    console.error("KNN API network error:", error);
-    return generateMockKNNData();
-  }
+export async function runRegression(req, signal) {
+  return withFallback("/regression", req, mockRegression, signal);
 }
 
-// ---------- /api/decision_tree ----------
-export async function runDecisionTree(req) {
-  if (!API_BASE) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return generateMockTreeData();
-  }
-  
-  try {
-    const response = await fetch(`${API_BASE}/decision_tree`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(req),
-    });
-    if (!response.ok) {
-      console.error(`Decision Tree API error: ${response.status}`);
-      return generateMockTreeData();
-    }
-    return response.json();
-  } catch (error) {
-    console.error("Decision Tree API network error:", error);
-    return generateMockTreeData();
-  }
+export async function runKNN(req, signal) {
+  return withFallback("/knn", req, mockKNN, signal);
 }
 
-// ---------- /api/genetic_algorithm ----------
-export async function runGA(req) {
-  if (!API_BASE) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return generateMockGAData();
-  }
-  
-  try {
-    const response = await fetch(`${API_BASE}/genetic_algorithm`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(req),
-    });
-    if (!response.ok) {
-      console.error(`Genetic Algorithm API error: ${response.status}`);
-      return generateMockGAData();
-    }
-    return response.json();
-  } catch (error) {
-    console.error("Genetic Algorithm API network error:", error);
-    return generateMockGAData();
-  }
+export async function runDecisionTree(req, signal) {
+  return withFallback("/decision_tree", req, mockTree, signal);
 }
 
-// ---------- /api/upload-dataset ----------
+export async function runGA(req, signal) {
+  return withFallback("/genetic_algorithm", req, mockGA, signal);
+}
+
 export async function uploadDataset(file) {
-  if (!API_BASE) {
-    console.warn("Cannot upload dataset without backend URL");
-    throw new Error("Backend URL not configured");
-  }
-  
+  if (!isBackendConfigured) throw new Error("Backend not configured.");
   const formData = new FormData();
   formData.append("file", file);
-  
+
   const response = await fetch(`${API_BASE}/upload-dataset`, {
     method: "POST",
     body: formData,
   });
-  
+
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || "Upload failed");
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Upload failed");
   }
-  
+
   return response.json();
 }
 
-// ---------- /api/datasets/{name} ----------
 export async function getDataset(name) {
-  if (!API_BASE) {
-    console.warn("Cannot fetch dataset without backend URL");
-    return null;
-  }
-  
+  if (!isBackendConfigured) return null;
   const response = await fetch(`${API_BASE}/datasets/${name}`);
-  if (!response.ok) {
-    console.error(`Dataset API error: ${response.status}`);
-    return null;
-  }
+  if (!response.ok) return null;
   return response.json();
+}
+
+export async function listDatasets() {
+  if (!isBackendConfigured) return ["iris", "breast_cancer", "moons", "circles", "blobs", "linear", "sine", "quadratic"];
+  const response = await fetch(`${API_BASE}/datasets`);
+  if (!response.ok) return [];
+  const json = await response.json();
+  return json.datasets || [];
 }

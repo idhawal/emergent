@@ -49,7 +49,7 @@ const accentMap = {
 
 export default function Home() {
   return (
-    <PageShell algorithm="regression">
+    <PageShell>
       <main className="px-4 md:px-6 py-10 md:py-16 max-w-6xl mx-auto">
         <div className="flex items-center gap-2 text-amber-300 text-xs font-mono mb-4 uppercase tracking-[0.2em]">
           <Sparkles className="h-3.5 w-3.5" />

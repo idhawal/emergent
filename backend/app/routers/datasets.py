@@ -54,6 +54,13 @@ def get_sine_data():
     df = pd.DataFrame({"x": X.flatten(), "y": y})
     return df
 
+def get_quadratic_data():
+    """Quadratic regression dataset for polynomial degree=2 demos."""
+    np.random.seed(0)
+    X = np.linspace(-3, 3, 100)
+    y = 0.5 * X**2 - X + 2 + np.random.randn(100) * 0.5
+    return pd.DataFrame({"x": X, "y": y})
+
 DATASETS = {
     "iris": get_iris_data,
     "breast_cancer": get_breast_cancer_data,
@@ -62,6 +69,7 @@ DATASETS = {
     "blobs": get_blobs_data,
     "linear": get_linear_data,
     "sine": get_sine_data,
+    "quadratic": get_quadratic_data,
 }
 
 @router.get("/datasets")

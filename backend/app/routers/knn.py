@@ -14,6 +14,7 @@ async def knn_endpoint(request: KNNRequest):
         weights=request.weights,
         task=request.task,
         dataset=request.dataset,
-        test_point=request.test_point
+        test_point=request.test_point,
+        uploaded_data=request.uploaded_data,
     )
     return result
