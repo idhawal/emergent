@@ -14,23 +14,28 @@ def test_health_check():
     """Test root endpoint returns OK."""
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Emergent ML Visualizer API", "version": "1.0.0"}
+    assert response.json() == {"message": "ML Visualizer API", "version": "1.0.0"}
 
 
 def test_regression_endpoint():
     """Test regression API returns valid response."""
     payload = {
-        "algo": "linear",
-        "learning_rate": 0.1,
+        "algo": "linear_gd",
+        "learning_rate": 0.01,
         "epochs": 100,
-        "noise": 0.1
+        "poly_degree": 1,
+        "penalty": 1.0,
+        "l1_ratio": 0.5,
+        "noise": 0.1,
+        "early_stopping": False
     }
     response = client.post("/api/regression", json=payload)
     assert response.status_code == 200
     data = response.json()
-    assert "theta" in data
+    assert "curve_x" in data
+    assert "curve_y" in data
     assert "cost_history" in data
-    assert "predictions" in data
+    assert "coefficients" in data
 
 
 def test_knn_endpoint():
@@ -39,12 +44,16 @@ def test_knn_endpoint():
         "k": 5,
         "metric": "euclidean",
         "weights": "uniform",
-        "dataset": "moons"
+        "task": "classification",
+        "dataset": "moons",
+        "test_point": None
     }
     response = client.post("/api/knn", json=payload)
     assert response.status_code == 200
     data = response.json()
-    assert "boundary" in data or "predictions" in data
+    assert "train_points" in data
+    assert "mesh_xx" in data
+    assert "mesh_yy" in data
 
 
 def test_decision_tree_endpoint():
@@ -72,11 +81,12 @@ def test_genetic_algorithm_endpoint():
         "pop_size": 50,
         "mutation_rate": 0.1,
         "crossover_rate": 0.8,
-        "generations": 80,
-        "nm": 20,
-        "nc": 15
+        "generations": 50,
+        "eta_m": 20,
+        "eta_c": 15
     }
     response = client.post("/api/genetic_algorithm", json=payload)
     assert response.status_code == 200
     data = response.json()
-    assert "population" in data or "fitness" in data
+    assert "history" in data
+    assert "contour_x" in data

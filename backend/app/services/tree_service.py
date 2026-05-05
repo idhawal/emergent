@@ -1,9 +1,8 @@
 import numpy as np
-from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.datasets import load_iris, load_breast_cancer, make_blobs
 from sklearn.model_selection import train_test_split
 from typing import Dict
-from app.utils.tree_parser import tree_to_json, get_tree_depth, count_leaves
+from app.services.custom_tree import CustomDecisionTreeClassifier, CustomDecisionTreeRegressor
 
 
 def load_dataset(dataset_name: str) -> tuple:
@@ -11,11 +10,11 @@ def load_dataset(dataset_name: str) -> tuple:
     if dataset_name == "iris":
         data = load_iris()
         X, y = data.data, data.target
-        feature_names = data.feature_names.tolist()
+        feature_names = data.feature_names if isinstance(data.feature_names, list) else data.feature_names.tolist()
     elif dataset_name == "breast_cancer":
         data = load_breast_cancer()
         X, y = data.data, data.target
-        feature_names = data.feature_names.tolist()
+        feature_names = data.feature_names if isinstance(data.feature_names, list) else data.feature_names.tolist()
     elif dataset_name == "blobs":
         X, y = make_blobs(n_samples=300, centers=3, n_features=2, random_state=42)
         feature_names = ["x_0", "x_1"]
@@ -33,7 +32,10 @@ def run_decision_tree(
     min_samples_leaf: int,
     dataset: str
 ) -> dict:
-    """Run decision tree algorithm."""
+    """
+    Run decision tree algorithm.
+    IMPLEMENTED FROM SCRATCH - NO SKLEARN TREE USED.
+    """
     
     # Load dataset
     X, y, feature_names = load_dataset(dataset)
@@ -43,9 +45,9 @@ def run_decision_tree(
         X, y, test_size=0.2, random_state=42
     )
     
-    # Create and fit model
+    # Create and fit model using CUSTOM implementation
     if task == "classifier":
-        model = DecisionTreeClassifier(
+        model = CustomDecisionTreeClassifier(
             criterion=criterion,
             max_depth=max_depth,
             min_samples_split=min_samples_split,
@@ -53,8 +55,7 @@ def run_decision_tree(
             random_state=42
         )
     else:
-        model = DecisionTreeRegressor(
-            criterion="squared_error" if criterion == "gini" else "absolute_error",
+        model = CustomDecisionTreeRegressor(
             max_depth=max_depth,
             min_samples_split=min_samples_split,
             min_samples_leaf=min_samples_leaf,
@@ -63,15 +64,15 @@ def run_decision_tree(
     
     model.fit(X_train, y_train)
     
-    # Calculate accuracy
+    # Calculate accuracy/score
     accuracy = model.score(X_test, y_test)
     
-    # Convert tree to JSON
-    tree_json = tree_to_json(model, feature_names, criterion)
+    # Convert tree to JSON using custom method
+    tree_json = model.to_json(feature_names)
     
-    # Get tree metrics
-    depth = get_tree_depth(tree_json)
-    n_leaves = count_leaves(tree_json)
+    # Get tree metrics using custom methods
+    depth = model.get_depth()
+    n_leaves = model.get_n_leaves()
     
     # Get feature importances
     feature_importances = {}

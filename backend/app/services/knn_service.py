@@ -1,6 +1,5 @@
 import numpy as np
 from sklearn.datasets import make_moons, make_circles, make_blobs
-from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from typing import Tuple, List, Optional
 
 

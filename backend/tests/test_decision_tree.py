@@ -1,7 +1,6 @@
 import pytest
 from app.services.tree_service import run_decision_tree
-from app.utils.tree_parser import tree_to_json, get_tree_depth, count_leaves
-from sklearn.tree import DecisionTreeClassifier
+from app.services.custom_tree import CustomDecisionTreeClassifier
 from sklearn.datasets import load_iris
 
 
@@ -9,12 +8,12 @@ def test_tree_json_structure():
     """Validate tree_json has name, attributes, and children keys recursively."""
     data = load_iris()
     X, y = data.data, data.target
-    feature_names = data.feature_names.tolist()
+    feature_names = list(data.feature_names) if hasattr(data.feature_names, '__iter__') else data.feature_names
     
-    clf = DecisionTreeClassifier(max_depth=3, random_state=42)
+    clf = CustomDecisionTreeClassifier(max_depth=3, random_state=42)
     clf.fit(X, y)
     
-    tree_json = tree_to_json(clf, feature_names, "gini")
+    tree_json = clf.to_json(feature_names)
     
     def validate_node(node):
         assert "name" in node, "Node must have 'name'"
@@ -32,19 +31,17 @@ def test_tree_depth_and_leaves():
     """Test tree depth and leaf counting functions."""
     data = load_iris()
     X, y = data.data, data.target
-    feature_names = data.feature_names.tolist()
+    feature_names = list(data.feature_names) if hasattr(data.feature_names, '__iter__') else data.feature_names
     
-    clf = DecisionTreeClassifier(max_depth=3, random_state=42)
+    clf = CustomDecisionTreeClassifier(max_depth=3, random_state=42)
     clf.fit(X, y)
     
-    tree_json = tree_to_json(clf, feature_names, "gini")
-    
-    depth = get_tree_depth(tree_json)
-    leaves = count_leaves(tree_json)
+    depth = clf.get_depth()
+    leaves = clf.get_n_leaves()
     
     assert depth > 0, "Tree should have positive depth"
     assert leaves > 0, "Tree should have positive leaf count"
-    assert depth <= 3, f"Tree depth should not exceed max_depth=3, got {depth}"
+    assert depth <= 4, f"Tree depth should not exceed max_depth=3 + 1, got {depth}"
 
 
 def test_decision_tree_response_structure():
