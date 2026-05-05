@@ -53,7 +53,7 @@ export default function Home() {
       <main className="px-4 md:px-6 py-10 md:py-16 max-w-6xl mx-auto">
         <div className="flex items-center gap-2 text-amber-300 text-xs font-mono mb-4 uppercase tracking-[0.2em]">
           <Sparkles className="h-3.5 w-3.5" />
-          Interactive Academic Lab
+          Interactive Lab
         </div>
         <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl tracking-tight text-neutral-50 leading-[1.05]">
           Visualize, tune, and reason about
@@ -61,7 +61,7 @@ export default function Home() {
           <span className="text-amber-300">four families of ML algorithms.</span>
         </h1>
         <p className="text-neutral-400 mt-5 max-w-2xl text-base leading-relaxed">
-          A single-source-of-truth GUI built strictly to the master spec —
+          A single-source-of-truth GUI —
           Regression · KNN · Decision Trees · Genetic Algorithms. Every page is
           paired with a Theory drawer of equations and parameter guides.
         </p>

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Info, FlaskConical } from "lucide-react";
 import { useUIStore } from "@/store/store";
@@ -10,8 +10,12 @@ const navItems = [
   { to: "/genetic-algorithm", label: "Genetic Algorithms", testid: "nav-ga" },
 ];
 
+const ALGO_ROUTES = ['/regression', '/knn', '/decision-tree', '/genetic-algorithm'];
+
 export default function Navbar() {
   const setTheoryOpen = useUIStore((s) => s.setTheoryOpen);
+  const location = useLocation();
+  const showTheoryButton = ALGO_ROUTES.includes(location.pathname);
   return (
     <header
       data-testid="top-nav"
@@ -25,9 +29,6 @@ export default function Navbar() {
           <div className="leading-tight">
             <div className="font-display text-[15px] tracking-tight text-neutral-50">
               ML Visualizer
-            </div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-neutral-500 font-mono">
-              Academic Lab
             </div>
           </div>
         </div>
@@ -53,16 +54,18 @@ export default function Navbar() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <Button
-            data-testid="theory-button-global"
-            variant="outline"
-            size="sm"
-            className="border-neutral-700 bg-neutral-900 text-neutral-200 hover:bg-neutral-800 hover:text-amber-200"
-            onClick={() => setTheoryOpen(true)}
-          >
-            <Info className="h-4 w-4 mr-1.5" />
-            Theory
-          </Button>
+          {showTheoryButton && (
+            <Button
+              data-testid="theory-button-global"
+              variant="outline"
+              size="sm"
+              className="border-neutral-700 bg-neutral-900 text-neutral-200 hover:bg-neutral-800 hover:text-amber-200"
+              onClick={() => setTheoryOpen(true)}
+            >
+              <Info className="h-4 w-4 mr-1.5" />
+              Theory
+            </Button>
+          )}
         </div>
       </div>
     </header>
