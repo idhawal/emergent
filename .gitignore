@@ -1,4 +1,4 @@
-Update frontend/src/lib/api.js to use real API calls (the README has the exact code snippet for this — replace each mock function with an axios.post call)# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # IDE and editors
 .idea/
@@ -9,7 +9,6 @@ frontend/plugins/
 
 # Dependencies
 node_modules/
-/node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -21,28 +20,28 @@ node_modules/
 
 # Testing
 /coverage
+test_reports/
 
-# Next.js
+# Build outputs
 /.next/
 /out/
 next-env.d.ts
 *.tsbuildinfo
-
-# Production builds
 /build
 dist/
-dist
 
-# Environment files (comprehensive coverage)
+# Environment files
 .env
 .env.local
 .env.*.local
 **/.env
 **/.env.local
 !.env.example
-
 *token.json*
 *credentials.json*
+*.pem
+*.key
+.credentials
 
 # Logs and debug files
 npm-debug.log*
@@ -53,11 +52,10 @@ dump.rdb
 
 # System files
 .DS_Store
-*.pem
 
 # Python
 __pycache__/
-*pyc*
+*.pyc
 venv/
 .venv/
 
@@ -85,44 +83,5 @@ agenthub/agents/youtube/db
 # Build caches
 .cache/
 
-memory/test_credentials.md
+# Memory and testing
 memory/
-test_reports/
-test_result.md
-
-# Mobile development
-android-sdk/frontend/node_modules/.cache/default-development/1.pack
-frontend/node_modules/.cache/default-development/0.pack
--e 
-# Environment and credential files
-.env
-.env.*
-*.env
-credentials.json
-*.pem
-*.key
-.credentials
-frontend/node_modules/.cache/default-development/2.pack
--e 
-# Environment and credential files
-.env
-.env.*
-*.env
-credentials.json
-*.pem
-*.key
-.credentials
-PROJECT_STRUCTURE.md
-CLEANUP_SUMMARY.md
-REPOSITORY_CONTENTS.md
-VERIFICATION_GUIDE.md
-FINAL_SUMMARY.md
-TEST_FIXES_SUMMARY.md
-CONTEXT_TRANSFER_COMPLETE.md
-GIT_COMMIT_SUMMARY.md
-CORS_UPDATE_SUMMARY.md
-API_IMPLEMENTATION_GUIDE.md
-LATEST_COMMIT_SUMMARY.md
-IMPLEMENTATION_SUMMARY.md
-QUICK_START_GUIDE.md
-TODO_REMAINING_WORK.md

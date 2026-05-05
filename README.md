@@ -31,7 +31,7 @@ Every page includes a **Theory drawer** with KaTeX-rendered equations and parame
 | Backend | FastAPI, Python 3.11 |
 | ML / Math | NumPy (all algorithms implemented from scratch - no sklearn models) |
 | Validation | Pydantic v2 |
-| Tests | pytest (107 tests) |
+| Tests | pytest (122 tests) |
 | Deployment | Vercel (frontend) + Render (backend) |
 
 ---
@@ -96,7 +96,7 @@ You can also upload your own `.csv` file from any algorithm page.
 ```bash
 cd backend
 pytest tests/ -v
-# 107 tests: unit - integration - from-scratch verification - Pydantic validation
+# 122 tests: unit - integration - from-scratch verification - Pydantic validation
 ```
 
 To verify that no sklearn models are used in the algorithm implementations:
@@ -146,56 +146,50 @@ rg "from sklearn.linear_model import|from sklearn.neighbors import|from sklearn.
 ## 📚 Documentation
 
 ### Getting Started
-- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Complete local setup guide, environment configuration, running tests
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design, component hierarchy, algorithm improvements explained
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design, component hierarchy, algorithm architecture
 
-### Production Deployment
-- **[DEPLOYMENT_STATUS.md](DEPLOYMENT_STATUS.md)** - Current deployment status, live URLs, how deployment works
-- **[DEPLOYMENT_VERIFICATION.md](DEPLOYMENT_VERIFICATION.md)** - Verification checklist, health tests, troubleshooting
-- **[COMPLETION_SUMMARY.md](COMPLETION_SUMMARY.md)** - Project completion report with all improvements documented
-
-### Improvements & Quality
+### Improvements & Quality  
 - **[IMPROVEMENTS.md](IMPROVEMENTS.md)** - Detailed before/after for 150+ improvements, metrics, testing results
 
 ### Health Checks
-- **check-deployment.sh** - Bash script to verify production deployment
-- **check-deployment-simple.ps1** - PowerShell script for Windows
+- **check-deployment.ps1** - PowerShell script to verify production deployment status
 
 ---
 
-## 📊 Key Improvements (May 2026)
+## 📊 Key Features
 
-✅ **Decision Tree Visualization** - Fixed critical visibility issue with bright blue connectors and high-contrast nodes
-✅ **Error Handling** - Comprehensive validation with proper HTTP status codes (400/500)
-✅ **Performance** - 60% reduction in re-renders with React.memo() and useMemo()
-✅ **Testing** - 130+ automated tests (added 23 new tests)
-✅ **Documentation** - 700+ lines across 5+ documents
+✅ **Interactive Visualizations** - Real-time parameter tuning with instant visual feedback
+✅ **From-Scratch Implementation** - All algorithms implemented without sklearn models (122+ tests verify this)
 ✅ **Production Deployment** - Live at Vercel (frontend) and Render (backend)
-✅ **Accessibility** - WCAG AA compliance with ARIA labels
-✅ **Error Boundary** - Graceful crash handling in React
+✅ **Comprehensive Testing** - 122 automated tests with unit, integration, and validation coverage
+✅ **Clean Architecture** - Modular design with clear separation of concerns
+✅ **Responsive UI** - Works on desktop, tablet, and mobile devices
+✅ **Error Handling** - Graceful error boundaries and helpful error messages
+✅ **Documentation** - Architecture guide and improvement documentation
 
-See **[IMPROVEMENTS.md](IMPROVEMENTS.md)** for complete details.
+See **[IMPROVEMENTS.md](IMPROVEMENTS.md)** for detailed improvements and quality metrics.
 
 ---
 
-## ✨ What's New (May 2026)
+## ✨ Project Highlights
 
-### Frontend Updates
-- **TreePage.jsx** - Improved tree visualization with dynamic positioning, visible connectors, and high-contrast nodes
-- **ErrorBoundary.jsx** - NEW component for graceful error handling with recovery options
-- **Memoization** - Performance optimized with React.memo() and useMemo()
+### Frontend Architecture
+- **React 19** with modern hooks and state management (Zustand)
+- **Responsive UI** using Tailwind CSS and shadcn/ui components
+- **Real-time Visualization** with Plotly.js and react-d3-tree
+- **Theory Drawer** with KaTeX-rendered mathematical equations
 
-### Backend Updates
-- **Error Handling** - Proper HTTP status codes with helpful error messages
-- **Logging** - Structured logging with ISO format timestamps
-- **Validation** - Multi-layer input validation (Pydantic → service → router)
-- **Type Hints** - Enhanced with Literal types for better IDE support
+### Backend Architecture
+- **FastAPI** with comprehensive input validation (Pydantic v2)
+- **Custom ML Implementations** - All algorithms from scratch with NumPy
+- **Structured Logging** with ISO format timestamps
+- **OpenAPI Documentation** auto-generated at `/docs`
 
-### Testing Additions
-- 23 new tests added (107 → 130+)
-- All tests passing with comprehensive coverage
-- API endpoint testing with HTTP status verification
-- Edge case validation (max_depth, min_samples, CSV uploads)
+### Deployment
+- **Frontend**: Vercel (auto-deploys from main branch)
+- **Backend**: Render (Python 3.11 with Gunicorn/Uvicorn)
+- **Database**: Not needed - all data computed in real-time
+- **Health Checks**: PowerShell script for quick verification
 
 ---
 
@@ -225,15 +219,15 @@ See **[DEPLOYMENT_VERIFICATION.md](DEPLOYMENT_VERIFICATION.md)** for complete ve
 
 ---
 
-## 📞 Support & Resources
+## 📞 Resources
 
 | Resource | Link |
 |----------|------|
 | API Documentation | https://emergent-av9b.onrender.com/docs |
+| API Health Check | https://emergent-av9b.onrender.com/health |
 | GitHub Repository | https://github.com/idhawal/emergent |
-| GitHub Issues | Report bugs or request features |
-| Local Development | See DEVELOPMENT.md |
-| Architecture Details | See ARCHITECTURE.md |
+| Local Development | See **Running Locally** section above |
+| Architecture Details | See **[ARCHITECTURE.md](ARCHITECTURE.md)** |
 
 ---
 
