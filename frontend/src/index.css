@@ -36,17 +36,6 @@ body {
 /* react-d3-tree node hit area */
 .rd3t-leaf-node, .rd3t-node { cursor: pointer; }
 
-/* Ensure tree node text and backgrounds have correct colors */
-.rd3t-tree-container svg g text {
-  fill: #f9fafb !important;
-}
-.rd3t-tree-container svg g rect {
-  fill: #111827 !important;
-}
-.rd3t-tree-container svg path.rd3t-link {
-  stroke: rgba(251,191,36,0.72) !important;
-}
-
 @layer base {
     :root {
         --background: 0 0% 4%;

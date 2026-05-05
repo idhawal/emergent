@@ -290,14 +290,14 @@ function TreeCard({ title, resp, loading, testid, large }) {
           data={resp.tree_json}
           orientation="vertical"
           translate={{ x: 420, y: 90 }}
-          zoom={0.9}
-          scaleExtent={{ min: 0.4, max: 2.2 }}
+          zoom={0.8}
+          scaleExtent={{ min: 0.3, max: 2.5 }}
           pathFunc="diagonal"
-          collapsible={true}
-          separation={{ siblings: 1.2, nonSiblings: 1.8 }}
+          collapsible={false}
+          separation={{ siblings: 2.0, nonSiblings: 2.5 }}
           renderCustomNodeElement={renderNode}
           styles={{
-            links: { stroke: "rgba(251,191,36,0.72)", strokeWidth: 1.8 },
+            links: { stroke: "rgba(251,191,36,0.72)", strokeWidth: 2 },
           }}
         />
       </div>
@@ -313,45 +313,45 @@ function renderNode({ nodeDatum, toggleNode }) {
   return (
     <g onClick={toggleNode}>
       <rect
-        width={240}
-        height={isLeaf ? 76 : 90}
-        x={-120}
-        y={-38}
-        rx={8}
-        ry={8}
-        fill={isLeaf ? "#111827" : "#111111"}
-        stroke={isLeaf ? "#34d399" : "#fbbf24"}
-        strokeWidth={1.8}
+        width={260}
+        height={isLeaf ? 85 : 100}
+        x={-130}
+        y={-42}
+        rx={10}
+        ry={10}
+        fill={isLeaf ? "#f0f9ff" : "#fefce8"}
+        stroke={isLeaf ? "#0ea5e9" : "#f59e0b"}
+        strokeWidth={2}
       />
       <text
         x={0}
-        y={-14}
+        y={-18}
         textAnchor="middle"
         fontFamily="'IBM Plex Mono', monospace"
-        fontSize={13}
+        fontSize={14}
         fontWeight="600"
-        fill="#f9fafb"
+        fill="#1e293b"
       >
         {nodeDatum.name}
       </text>
       <text
         x={0}
-        y={12}
+        y={8}
         textAnchor="middle"
         fontFamily="'IBM Plex Mono', monospace"
-        fontSize={11}
-        fill="#d1d5db"
+        fontSize={12}
+        fill="#475569"
       >
         {`samples: ${samples}`}
       </text>
       {score !== "" && (
         <text
           x={0}
-          y={30}
+          y={28}
           textAnchor="middle"
           fontFamily="'IBM Plex Mono', monospace"
-          fontSize={11}
-          fill={isLeaf ? "#34d399" : "#fbbf24"}
+          fontSize={12}
+          fill={isLeaf ? "#0284c7" : "#d97706"}
         >
           {`${attr.gini != null ? "gini" : "entropy"}: ${score}`}
         </text>
