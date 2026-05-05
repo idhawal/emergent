@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import PageShell from "@/components/layout/PageShell";
 import Sidebar from "@/components/layout/Sidebar";
 import MetricsPanel from "@/components/layout/MetricsPanel";
@@ -18,9 +18,29 @@ import { runDecisionTree } from "@/lib/api";
 import DatasetSelector from "@/components/shared/DatasetSelector";
 import Tree from "react-d3-tree";
 
+/**
+ * Utility to truncate long text with ellipsis
+ * @param {string} text - Text to truncate
+ * @param {number} maxLength - Maximum length
+ * @returns {string} Truncated text
+ */
+function truncateText(text, maxLength = 30) {
+  return text.length > maxLength ? text.slice(0, maxLength - 1) + "…" : text;
+}
+
+/** Available datasets for decision tree training */
 const DATASETS = ["iris", "breast_cancer", "blobs"];
 
-export default function TreePage() {
+/**
+ * TreePage - Main page for Decision Tree algorithm visualization
+ * Features:
+ * - Live parameter tuning (depth, min_samples_split, min_samples_leaf)
+ * - Gini vs Entropy comparison mode
+ * - Feature importance visualization
+ * - CSV file upload support
+ * - Responsive tree rendering with automatic zoom/positioning
+ */
+function TreePage() {
   const s = useTreeStore();
   const setTheoryOpen = useUIStore((u) => u.setTheoryOpen);
   const [respA, setRespA] = useState(null);
@@ -267,7 +287,26 @@ function Field({ label, value, hint, children }) {
   );
 }
 
+/**
+ * TreeCard - Renders a single decision tree visualization with improved visibility
+ * @param {string} title - Card title
+ * @param {Object} resp - Tree response data containing tree_json, depth, accuracy, n_leaves
+ * @param {boolean} loading - Loading state indicator
+ * @param {string} testid - Test ID for E2E testing
+ * @param {boolean} large - Use large height (560px vs 420px)
+ */
 function TreeCard({ title, resp, loading, testid, large }) {
+  // Calculate optimal zoom and translate based on tree depth for better visibility
+  const treeMetrics = useMemo(() => {
+    if (!resp) return { zoom: 0.8, translate: { x: 420, y: 90 } };
+    const depth = resp.depth || 3;
+    // Decrease zoom for deeper trees to fit more content
+    const zoom = Math.max(0.5, 1.2 - (depth * 0.08));
+    // Adjust vertical offset based on depth to center tree better
+    const yOffset = Math.max(60, 40 + depth * 15);
+    return { zoom, translate: { x: 420, y: yOffset } };
+  }, [resp?.depth]);
+
   if (loading || !resp) {
     return (
       <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
@@ -276,6 +315,7 @@ function TreeCard({ title, resp, loading, testid, large }) {
       </div>
     );
   }
+  
   return (
     <div data-testid={testid} className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4 overflow-hidden">
       <div className="flex items-center justify-between mb-2">
@@ -283,21 +323,23 @@ function TreeCard({ title, resp, loading, testid, large }) {
         <div className="text-[10px] font-mono text-neutral-500">acc {resp.accuracy} · depth {resp.depth} · leaves {resp.n_leaves}</div>
       </div>
       <div
-        className={`${large ? "h-[560px]" : "h-[420px]"} rounded bg-neutral-950/50 border border-neutral-800 overflow-auto`}
+        className={`${large ? "h-[560px]" : "h-[420px]"} rounded bg-neutral-950/50 border border-neutral-800 overflow-auto relative`}
         data-testid={`${testid}-canvas`}
+        role="img"
+        aria-label={`Decision tree visualization with depth ${resp.depth} and ${resp.n_leaves} leaves`}
       >
         <Tree
           data={resp.tree_json}
           orientation="vertical"
-          translate={{ x: 420, y: 90 }}
-          zoom={0.8}
-          scaleExtent={{ min: 0.3, max: 2.5 }}
+          translate={treeMetrics.translate}
+          zoom={treeMetrics.zoom}
+          scaleExtent={{ min: 0.2, max: 3.0 }}
           pathFunc="diagonal"
           collapsible={false}
-          separation={{ siblings: 2.0, nonSiblings: 2.5 }}
+          separation={{ siblings: 2.2, nonSiblings: 2.8 }}
           renderCustomNodeElement={renderNode}
           styles={{
-            links: { stroke: "#94a3b8", strokeWidth: 3 },
+            links: { stroke: "#3b82f6", strokeWidth: 2.5 },
           }}
         />
       </div>
@@ -305,55 +347,104 @@ function TreeCard({ title, resp, loading, testid, large }) {
   );
 }
 
+/**
+ * renderNode - Renders individual tree nodes with improved visibility and accessibility
+ * Features: Better contrast, hover effects, tooltip support, responsive sizing
+ * @param {Object} nodeDatum - Node data from tree structure
+ * @param {boolean} toggleNode - Toggle function for node interactions
+ * @returns {JSX.Element} SVG group with styled node
+ */
 function renderNode({ nodeDatum, toggleNode }) {
   const isLeaf = !nodeDatum.children || nodeDatum.children.length === 0;
   const attr = nodeDatum.attributes || {};
   const score = attr.gini ?? attr.entropy ?? "";
   const samples = attr.samples ?? "";
+  
+  // Truncate long feature names for better readability
+  const displayName = truncateText(nodeDatum.name, 28);
+  const fullName = nodeDatum.name;
+  
+  // Improved colors: more vibrant, better contrast
+  const nodeConfig = isLeaf
+    ? {
+        fill: "#0f172a",        // dark blue for leaves
+        stroke: "#0ea5e9",      // bright cyan border
+        textColor: "#06b6d4",   // cyan text for leaf condition
+        scoreColor: "#06b6d4",
+        samplesColor: "#cbd5e1",
+        height: 90,
+      }
+    : {
+        fill: "#1e1b4b",        // deep purple for decision nodes
+        stroke: "#a78bfa",      // bright purple border
+        textColor: "#e9d5ff",   // light purple text
+        scoreColor: "#c4b5fd",
+        samplesColor: "#d8b4fe",
+        height: 105,
+      };
+
   return (
-    <g onClick={toggleNode}>
+    <g onClick={toggleNode} className="cursor-pointer hover:opacity-90 transition-opacity">
+      {/* Node background rectangle with improved styling */}
       <rect
-        width={260}
-        height={isLeaf ? 85 : 100}
-        x={-130}
-        y={-42}
-        rx={10}
-        ry={10}
-        fill={isLeaf ? "#f0f9ff" : "#fefce8"}
-        stroke={isLeaf ? "#0ea5e9" : "#f59e0b"}
-        strokeWidth={2}
+        width={240}
+        height={nodeConfig.height}
+        x={-120}
+        y={-nodeConfig.height / 2}
+        rx={8}
+        ry={8}
+        fill={nodeConfig.fill}
+        stroke={nodeConfig.stroke}
+        strokeWidth={2.5}
+        style={{
+          filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.4))",
+          transition: "all 0.2s ease",
+        }}
       />
+      
+      {/* Main condition/decision text - improved contrast and sizing */}
       <text
         x={0}
-        y={-18}
-        textAnchor="middle"
-        fontFamily="'IBM Plex Mono', monospace"
-        fontSize={15}
-        fontWeight="500"
-        fill="#2957c4"
-      >
-        {nodeDatum.name}
-      </text>
-      <text
-        x={0}
-        y={8}
+        y={-nodeConfig.height / 2 + 20}
         textAnchor="middle"
         fontFamily="'IBM Plex Mono', monospace"
         fontSize={13}
-        fontWeight="400"
-        fill="#334155"
+        fontWeight="600"
+        fill={nodeConfig.textColor}
+        style={{
+          pointerEvents: "none",
+          textShadow: "0 0 2px rgba(0,0,0,0.8)",
+        }}
       >
-        {`samples: ${samples}`}
+        <title>{fullName}</title>
+        {displayName}
       </text>
+      
+      {/* Samples count - better visibility */}
+      <text
+        x={0}
+        y={-nodeConfig.height / 2 + 42}
+        textAnchor="middle"
+        fontFamily="'IBM Plex Mono', monospace"
+        fontSize={12}
+        fontWeight="500"
+        fill={nodeConfig.samplesColor}
+        style={{ pointerEvents: "none" }}
+      >
+        {`n: ${samples}`}
+      </text>
+      
+      {/* Score (Gini/Entropy) - improved visibility */}
       {score !== "" && (
         <text
           x={0}
-          y={28}
+          y={-nodeConfig.height / 2 + 60}
           textAnchor="middle"
           fontFamily="'IBM Plex Mono', monospace"
-          fontSize={13}
-          fontWeight="400"
-          fill={isLeaf ? "#0369a1" : "#b45309"}
+          fontSize={12}
+          fontWeight="500"
+          fill={nodeConfig.scoreColor}
+          style={{ pointerEvents: "none" }}
         >
           {`${attr.gini != null ? "gini" : "entropy"}: ${score}`}
         </text>
@@ -362,12 +453,24 @@ function renderNode({ nodeDatum, toggleNode }) {
   );
 }
 
-function FeatureImportanceChart({ importances, title }) {
-  const sorted = Object.entries(importances)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8); // Show top 8 features
+/**
+ * FeatureImportanceChart - Displays feature importance as horizontal bar chart
+ * Memoized to prevent unnecessary re-renders
+ * @param {Object} importances - Feature importance dictionary
+ * @param {string} title - Chart title
+ */
+const FeatureImportanceChart = React.memo(function FeatureImportanceChart({ importances, title }) {
+  const sorted = useMemo(() => 
+    Object.entries(importances)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8),
+    [importances]
+  );
 
-  const maxImportance = Math.max(...sorted.map(([, v]) => v));
+  const maxImportance = useMemo(() => 
+    sorted.length > 0 ? Math.max(...sorted.map(([, v]) => v)) : 1,
+    [sorted]
+  );
 
   return (
     <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
@@ -375,13 +478,23 @@ function FeatureImportanceChart({ importances, title }) {
       <div className="space-y-2">
         {sorted.map(([feature, importance], idx) => (
           <div key={idx} className="flex items-center gap-2">
-            <span className="text-xs text-neutral-400 min-w-[80px] truncate">{feature}</span>
+            <span 
+              className="text-xs text-neutral-400 min-w-[80px] truncate"
+              title={feature}
+              aria-label={`${feature}: ${(importance * 100).toFixed(1)}%`}
+            >
+              {feature}
+            </span>
             <div className="flex-1 h-5 bg-neutral-950/50 rounded border border-neutral-800 overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all"
                 style={{
                   width: `${(importance / maxImportance) * 100}%`,
                 }}
+                role="progressbar"
+                aria-valuenow={Math.round((importance / maxImportance) * 100)}
+                aria-valuemin={0}
+                aria-valuemax={100}
               />
             </div>
             <span className="text-[10px] font-mono text-amber-300 min-w-[45px] text-right">
@@ -392,4 +505,6 @@ function FeatureImportanceChart({ importances, title }) {
       </div>
     </div>
   );
-}
+});
+
+export default React.memo(TreePage);
