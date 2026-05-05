@@ -297,7 +297,7 @@ function TreeCard({ title, resp, loading, testid, large }) {
           separation={{ siblings: 2.0, nonSiblings: 2.5 }}
           renderCustomNodeElement={renderNode}
           styles={{
-            links: { stroke: "rgba(251,191,36,0.72)", strokeWidth: 2 },
+            links: { stroke: "#94a3b8", strokeWidth: 3 },
           }}
         />
       </div>
@@ -328,9 +328,9 @@ function renderNode({ nodeDatum, toggleNode }) {
         y={-18}
         textAnchor="middle"
         fontFamily="'IBM Plex Mono', monospace"
-        fontSize={14}
-        fontWeight="600"
-        fill="#1e293b"
+        fontSize={15}
+        fontWeight="500"
+        fill="#2957c4"
       >
         {nodeDatum.name}
       </text>
@@ -339,8 +339,9 @@ function renderNode({ nodeDatum, toggleNode }) {
         y={8}
         textAnchor="middle"
         fontFamily="'IBM Plex Mono', monospace"
-        fontSize={12}
-        fill="#475569"
+        fontSize={13}
+        fontWeight="400"
+        fill="#334155"
       >
         {`samples: ${samples}`}
       </text>
@@ -350,8 +351,9 @@ function renderNode({ nodeDatum, toggleNode }) {
           y={28}
           textAnchor="middle"
           fontFamily="'IBM Plex Mono', monospace"
-          fontSize={12}
-          fill={isLeaf ? "#0284c7" : "#d97706"}
+          fontSize={13}
+          fontWeight="400"
+          fill={isLeaf ? "#0369a1" : "#b45309"}
         >
           {`${attr.gini != null ? "gini" : "entropy"}: ${score}`}
         </text>
