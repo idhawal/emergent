@@ -10,7 +10,11 @@ app = FastAPI(title="ML Visualizer API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(","),
+    allow_origins=[
+        "http://localhost:3000",  # Local development
+        "https://emergent-xyz.vercel.app",  # Production frontend (replace with your actual URL)
+        # Add more origins as needed
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
