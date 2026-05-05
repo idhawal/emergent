@@ -12,7 +12,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_origins=[
         "http://localhost:3000",  # Local development
-        "https://emergent-xyz.vercel.app",  # Production frontend (replace with your actual URL)
+        "https://emergent-one.vercel.app/",  # Production frontend (replace with your actual URL)
         # Add more origins as needed
     ],
     allow_methods=["*"],
