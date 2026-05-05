@@ -75,8 +75,7 @@ export default function GAPage() {
       s.set({ ghostHistory: { fn: lastFn.current, history: prevHistory } });
       lastFn.current = s.function;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [s.function]);
+  }, [s.function, resp, s]);
 
   // animation
   useEffect(() => {
