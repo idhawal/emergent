@@ -133,10 +133,10 @@ backend/
 
 ## Team Members
 
-- **Aryan Chawla,         Roll Number:23124019**
-- **Chirag Bishnoi,       Roll Number:23124027**
-- **Chaudari Arpit Kumar, Roll Number:23124026**
-- **Dhawal Palaiya,       Roll Number:23124030**
+- **Aryan Chawla,         Roll Number: 23124019**
+- **Chirag Bishnoi,       Roll Number: 23124027**
+- **Chaudari Arpit Kumar, Roll Number: 23124026**
+- **Dhawal Palaiya,       Roll Number: 23124030**
 
 ---
 
