@@ -289,13 +289,15 @@ function TreeCard({ title, resp, loading, testid, large }) {
         <Tree
           data={resp.tree_json}
           orientation="vertical"
-          translate={{ x: 320, y: 60 }}
+          translate={{ x: 420, y: 90 }}
+          zoom={0.9}
+          scaleExtent={{ min: 0.4, max: 2.2 }}
           pathFunc="diagonal"
           collapsible={true}
-          separation={{ siblings: 1, nonSiblings: 1.4 }}
+          separation={{ siblings: 1.2, nonSiblings: 1.8 }}
           renderCustomNodeElement={renderNode}
           styles={{
-            links: { stroke: "rgba(251,191,36,0.5)", strokeWidth: 1.4 },
+            links: { stroke: "rgba(251,191,36,0.72)", strokeWidth: 1.8 },
           }}
         />
       </div>
@@ -311,23 +313,24 @@ function renderNode({ nodeDatum, toggleNode }) {
   return (
     <g onClick={toggleNode}>
       <rect
-        width={210}
-        height={isLeaf ? 60 : 70}
-        x={-105}
-        y={-30}
+        width={240}
+        height={isLeaf ? 76 : 90}
+        x={-120}
+        y={-38}
         rx={8}
         ry={8}
-        fill={isLeaf ? "#0a0a0a" : "#171717"}
+        fill={isLeaf ? "#111827" : "#111111"}
         stroke={isLeaf ? "#34d399" : "#fbbf24"}
-        strokeWidth={1.5}
+        strokeWidth={1.8}
       />
       <text
         x={0}
-        y={-8}
+        y={-14}
         textAnchor="middle"
         fontFamily="'IBM Plex Mono', monospace"
-        fontSize={12}
-        fill="#fafafa"
+        fontSize={13}
+        fontWeight="600"
+        fill="#f9fafb"
       >
         {nodeDatum.name}
       </text>
@@ -336,18 +339,18 @@ function renderNode({ nodeDatum, toggleNode }) {
         y={12}
         textAnchor="middle"
         fontFamily="'IBM Plex Mono', monospace"
-        fontSize={10}
-        fill="#a3a3a3"
+        fontSize={11}
+        fill="#d1d5db"
       >
         {`samples: ${samples}`}
       </text>
       {score !== "" && (
         <text
           x={0}
-          y={26}
+          y={30}
           textAnchor="middle"
           fontFamily="'IBM Plex Mono', monospace"
-          fontSize={10}
+          fontSize={11}
           fill={isLeaf ? "#34d399" : "#fbbf24"}
         >
           {`${attr.gini != null ? "gini" : "entropy"}: ${score}`}
