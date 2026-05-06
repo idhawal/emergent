@@ -973,7 +973,11 @@ logger.error("Error processing tree", exc_info=True)
 
 ## Contributors
 
-- Aryan Chawla (Full Stack)
-- Chirag Bishnoi (Backend)
-- Chaudhari Arpit Kumar (Frontend)
-- Dhawal Palaiya (ML Implementation)
+| Contributor | Roll Number | Email |
+|--------|------|-------|
+| Aryan Chawla | 23124019 | aryanc.it.23@nitj.ac.in |
+| Chirag Bishnoi | 23124027 | chiragk.it.23@nitj.ac.in |
+| Chaudhari Arpit Kumar | 23124026 | chaudharia.it.23@nitj.ac.in |
+| Dhawal Palaiya | 23124030 | dhawalp.it.23@nitj.ac.in |
+
+---
