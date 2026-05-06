@@ -340,7 +340,7 @@ function TreeCard({ title, resp, loading, testid, large }) {
           separation={{ siblings: 2.2, nonSiblings: 2.8 }}
           renderCustomNodeElement={renderNode}
           styles={{
-            links: { stroke: "#3b82f6", strokeWidth: 2.5 },
+            links: { stroke: "#fbbf24", strokeWidth: 2.5 },
           }}
         />
       </div>
@@ -365,85 +365,87 @@ function renderNode({ nodeDatum, toggleNode }) {
   const displayName = truncateText(nodeDatum.name, 28);
   const fullName = nodeDatum.name;
   
-  // Improved colors: more vibrant, better contrast
+  // Enhanced colors with white base for excellent visibility, brand-aligned accents
   const nodeConfig = isLeaf
     ? {
-        fill: "#0f172a",        // dark blue for leaves
-        stroke: "#0ea5e9",      // bright cyan border
-        textColor: "#06b6d4",   // cyan text for leaf condition
-        scoreColor: "#06b6d4",
-        samplesColor: "#cbd5e1",
-        height: 90,
+        fill: "#fafafa",        // Near-white for excellent contrast
+        stroke: "#34d399",      // Emerald border for leaf nodes (successful/positive terminal)
+        strokeWidth: 3,
+        textColor: "#1f2937",   // Dark gray text for readability on white
+        scoreColor: "#059669",  // Darker emerald for gini/entropy scores
+        samplesColor: "#374151",// Medium gray for sample counts
+        height: 100,
       }
     : {
-        fill: "#1e1b4b",        // deep purple for decision nodes
-        stroke: "#a78bfa",      // bright purple border
-        textColor: "#e9d5ff",   // light purple text
-        scoreColor: "#c4b5fd",
-        samplesColor: "#d8b4fe",
-        height: 105,
+        fill: "#f3f4f6",        // Very light gray for decision nodes
+        stroke: "#fbbf24",      // Amber border (primary brand color) for decision nodes
+        strokeWidth: 3,
+        textColor: "#1f2937",   // Dark text on light background
+        scoreColor: "#d97706",  // Darker amber for gini/entropy
+        samplesColor: "#4b5563",// Gray for sample counts
+        height: 115,
       };
 
   return (
     <g onClick={toggleNode} className="cursor-pointer hover:opacity-90 transition-opacity">
-      {/* Node background rectangle with improved styling */}
+      {/* Node background rectangle with brand-aligned styling and enhanced visibility */}
       <rect
-        width={240}
+        width={260}
         height={nodeConfig.height}
-        x={-120}
+        x={-130}
         y={-nodeConfig.height / 2}
-        rx={8}
-        ry={8}
+        rx={10}
+        ry={10}
         fill={nodeConfig.fill}
         stroke={nodeConfig.stroke}
-        strokeWidth={2.5}
+        strokeWidth={nodeConfig.strokeWidth}
         style={{
-          filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.4))",
+          filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.3))",
           transition: "all 0.2s ease",
         }}
       />
       
-      {/* Main condition/decision text - improved contrast and sizing */}
+      {/* Main condition/decision text - brand typography with enhanced contrast */}
       <text
         x={0}
-        y={-nodeConfig.height / 2 + 20}
+        y={-nodeConfig.height / 2 + 22}
         textAnchor="middle"
         fontFamily="'IBM Plex Mono', monospace"
         fontSize={13}
-        fontWeight="600"
+        fontWeight="700"
         fill={nodeConfig.textColor}
         style={{
           pointerEvents: "none",
-          textShadow: "0 0 2px rgba(0,0,0,0.8)",
+          letterSpacing: "-0.5px",
         }}
       >
         <title>{fullName}</title>
         {displayName}
       </text>
       
-      {/* Samples count - better visibility */}
+      {/* Samples count - improved visibility with brand typography */}
       <text
         x={0}
-        y={-nodeConfig.height / 2 + 42}
+        y={-nodeConfig.height / 2 + 46}
         textAnchor="middle"
         fontFamily="'IBM Plex Mono', monospace"
         fontSize={12}
-        fontWeight="500"
+        fontWeight="600"
         fill={nodeConfig.samplesColor}
         style={{ pointerEvents: "none" }}
       >
-        {`n: ${samples}`}
+        {`samples: ${samples}`}
       </text>
       
-      {/* Score (Gini/Entropy) - improved visibility */}
+      {/* Score (Gini/Entropy) - improved visibility with brand colors */}
       {score !== "" && (
         <text
           x={0}
-          y={-nodeConfig.height / 2 + 60}
+          y={-nodeConfig.height / 2 + 66}
           textAnchor="middle"
           fontFamily="'IBM Plex Mono', monospace"
-          fontSize={12}
-          fontWeight="500"
+          fontSize={11}
+          fontWeight="600"
           fill={nodeConfig.scoreColor}
           style={{ pointerEvents: "none" }}
         >
