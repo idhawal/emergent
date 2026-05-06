@@ -497,12 +497,12 @@ yarn install
 
 ## Team
 
-| Member | Role | Email |
+| Member | Roll Number | Email |
 |--------|------|-------|
-| Aryan Chawla | Full Stack | 23124019@iitb.ac.in |
-| Chirag Bishnoi | Backend | 23124027@iitb.ac.in |
-| Chaudhari Arpit Kumar | Frontend | 23124026@iitb.ac.in |
-| Dhawal Palaiya | ML Implementation | 23124030@iitb.ac.in |
+| Aryan Chawla | 23124019 | aryanc.it.23@nitj.ac.in |
+| Chirag Bishnoi | 23124027 | chiragk.it.23@nitj.ac.in |
+| Chaudhari Arpit Kumar | 23124026 | chaudharia.it.23@nitj.ac.in |
+| Dhawal Palaiya | 23124030 | dhawalp.it.23@nitj.ac.in |
 
 ---
 
