@@ -5,6 +5,7 @@ import RegressionPage from "@/components/regression/RegressionPage";
 import KNNPage from "@/components/knn/KNNPage";
 import TreePage from "@/components/decision-tree/TreePage";
 import GAPage from "@/components/genetic/GAPage";
+import "@/App.css";
 
 /**
  * App - Root application component with routing and error handling
