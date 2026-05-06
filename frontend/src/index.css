@@ -90,6 +90,39 @@ body {
 @layer base {
     * { @apply border-border; }
     body { @apply bg-background text-foreground; }
+    
+    /* Enhanced focus indicators for better keyboard accessibility */
+    *:focus-visible {
+        @apply outline-none;
+    }
+    
+    /* Screen reader only utility */
+    .sr-only {
+        @apply absolute w-1 h-1 p-0 -m-1 overflow-hidden clip-path-[inset(50%)];
+        clip-path: inset(50%);
+    }
+    
+    /* Improved typography on small devices */
+    h1 {
+        @apply text-balance;
+    }
+    
+    h2, h3 {
+        @apply text-pretty;
+    }
+    
+    p {
+        @apply leading-relaxed;
+    }
+    
+    /* Ensure readable text on very small screens */
+    @media (max-width: 640px) {
+        body {
+            min-width: 320px;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+    }
 }
 
 @layer base {

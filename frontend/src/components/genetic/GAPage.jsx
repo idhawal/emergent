@@ -347,6 +347,7 @@ export default function GAPage() {
               { label: "Crossover", value: s.crossover_rate.toFixed(2) },
               { label: "ηm / ηc", value: `${s.eta_m} / ${s.eta_c}` },
             ]}
+            isLoading={loading}
           />
         </main>
       </div>

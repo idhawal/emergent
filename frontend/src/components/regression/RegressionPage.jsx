@@ -384,6 +384,7 @@ export default function RegressionPage() {
               { label: "Stopped At", value: resp?.stopped_at_epoch ?? "—" },
               { label: "Zeroed Coefs", value: showLasso ? `${zeroedCount}/${resp?.coefficients.length || 0}` : "—", color: showLasso ? "text-rose-300" : "text-neutral-500" },
             ]}
+            isLoading={loading}
           />
         </main>
       </div>

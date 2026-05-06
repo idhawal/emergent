@@ -1,4 +1,17 @@
-export default function MetricsPanel({ items = [], children, dataTestId = "metrics-panel" }) {
+import { MetricsSkeleton } from "@/components/shared/SkeletonLoader";
+
+export default function MetricsPanel({ items = [], children, dataTestId = "metrics-panel", isLoading = false }) {
+  if (isLoading) {
+    return (
+      <div
+        data-testid={dataTestId}
+        className="border-t border-neutral-800 bg-neutral-950/70 px-4 md:px-6 py-3"
+      >
+        <MetricsSkeleton count={items.length || 4} />
+      </div>
+    );
+  }
+
   return (
     <div
       data-testid={dataTestId}

@@ -55,7 +55,7 @@ export default function Home() {
           <Sparkles className="h-3.5 w-3.5" />
           Interactive Lab
         </div>
-        <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl tracking-tight text-neutral-50 leading-[1.05]">
+        <h1 className="font-display text-3xl xs:text-4xl sm:text-5xl lg:text-6xl tracking-tight text-neutral-50 leading-[1.05]">
           Visualize, tune, and reason about
           <br />
           <span className="text-amber-300">four families of ML algorithms.</span>
@@ -79,7 +79,7 @@ export default function Home() {
                 <div className={`inline-flex items-center justify-center h-10 w-10 rounded-lg ring-1 ${accentMap[c.accent]}`}>
                   <Icon className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 font-display text-2xl text-neutral-50 tracking-tight">{c.title}</h3>
+                <h3 className="mt-4 font-display text-xl sm:text-2xl text-neutral-50 tracking-tight">{c.title}</h3>
                 <p className="text-sm text-neutral-400 mt-2 leading-relaxed">{c.desc}</p>
                 <div className="flex items-center gap-1.5 text-amber-300 text-xs font-mono mt-4 uppercase tracking-[0.18em]">
                   Open
