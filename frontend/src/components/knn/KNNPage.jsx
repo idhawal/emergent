@@ -205,7 +205,8 @@ export default function KNNPage() {
           <div className="flex-1 p-4 md:p-6 space-y-4">
             <div className="rounded-md bg-neutral-900/40 border border-neutral-800 px-3 py-2 flex items-center gap-2 text-xs text-neutral-400">
               <MousePointerClick className="h-3.5 w-3.5 text-amber-300" />
-              Click anywhere on the boundary plot to drop a test point. Lines connect to its K neighbors.
+              <span className="hidden sm:inline">Click anywhere on the boundary plot to drop a test point. Lines connect to its K neighbors.</span>
+              <span className="inline sm:hidden">Tap the plot to place a test point and see K neighbors highlighted.</span>
             </div>
 
             {s.compareMode ? (
@@ -263,6 +264,7 @@ export default function KNNPage() {
                 color: "text-emerald-300",
               },
             ]}
+            isLoading={loading}
           />
         </main>
       </div>

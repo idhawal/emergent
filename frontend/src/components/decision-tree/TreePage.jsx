@@ -254,6 +254,7 @@ function TreePage() {
                     },
                   ]
             }
+            isLoading={loading}
           />
           {/* Feature Importance Bar Chart */}
           {!loading && respA?.feature_importances && (

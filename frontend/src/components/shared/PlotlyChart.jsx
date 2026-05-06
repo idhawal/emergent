@@ -34,9 +34,14 @@ export const darkLayout = {
   },
 };
 
-export default function PlotlyChart({ data, layout, config, style, testid = "plotly-chart", onClick, onRelayout }) {
+export default function PlotlyChart({ data, layout, config, style, testid = "plotly-chart", onClick, onRelayout, ariaLabel }) {
   return (
-    <div data-testid={testid} className="w-full h-full">
+    <div 
+      data-testid={testid} 
+      className="w-full h-full"
+      role="img"
+      aria-label={ariaLabel || "Data visualization chart"}
+    >
       <Plot
         data={data}
         layout={{ ...darkLayout, ...(layout || {}) }}

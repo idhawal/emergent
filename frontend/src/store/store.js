@@ -1,9 +1,19 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export const useUIStore = create((set) => ({
-  theoryOpen: false,
-  setTheoryOpen: (v) => set({ theoryOpen: v }),
-}));
+export const useUIStore = create(
+  persist(
+    (set) => ({
+      theoryOpen: false,
+      setTheoryOpen: (v) => set({ theoryOpen: v }),
+      hasSeenTheoryHint: false,
+      setHasSeenTheoryHint: (v) => set({ hasSeenTheoryHint: v }),
+    }),
+    {
+      name: "ml-visualizer-ui",
+    }
+  )
+);
 
 export const useRegressionStore = create((set) => ({
   algo: "linear_gd",
