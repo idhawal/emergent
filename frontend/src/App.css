@@ -1,1 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap");
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "IBM Plex Mono", monospace;
+  background-color: #0a0a0a;
+  color: #f5f5f5;
+}
+
+/* Decision Tree SVG Styling - Connector Lines and Links */
+/* Target the SVG paths that render connector lines */
+.react-tree-container svg path,
+svg path[class*="link"],
+svg path[class*="connector"] {
+  stroke: #fbbf24 !important;  /* Amber color for all connector lines */
+  stroke-width: 2.5 !important;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+  fill: none !important;
+}
+
+/* Hover effect for better interactivity */
+.react-tree-container svg path:hover {
+  opacity: 1;
+  stroke-width: 3 !important;
+}
+
+/* React Tree Library specific selectors */
+.rd3t-link {
+  stroke: #fbbf24 !important;
+  stroke-width: 2.5px !important;
+  opacity: 0.85;
+  fill: none;
+}
+
+.rd3t-link:hover {
+  opacity: 1;
+  stroke-width: 3px !important;
+}

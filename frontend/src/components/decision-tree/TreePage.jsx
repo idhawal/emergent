@@ -339,9 +339,6 @@ function TreeCard({ title, resp, loading, testid, large }) {
           collapsible={false}
           separation={{ siblings: 2.2, nonSiblings: 2.8 }}
           renderCustomNodeElement={renderNode}
-          styles={{
-            links: { stroke: "#fbbf24", strokeWidth: 2.5 },
-          }}
         />
       </div>
     </div>
@@ -408,15 +405,15 @@ function renderNode({ nodeDatum, toggleNode }) {
       {/* Main condition/decision text - brand typography with enhanced contrast */}
       <text
         x={0}
-        y={-nodeConfig.height / 2 + 22}
+        y={-nodeConfig.height / 2 + 24}
         textAnchor="middle"
-        fontFamily="'IBM Plex Mono', monospace"
+        fontFamily="'IBM Plex Mono', 'Courier New', monospace"
         fontSize={13}
         fontWeight="700"
         fill={nodeConfig.textColor}
         style={{
           pointerEvents: "none",
-          letterSpacing: "-0.5px",
+          letterSpacing: "0px",
         }}
       >
         <title>{fullName}</title>
@@ -426,10 +423,10 @@ function renderNode({ nodeDatum, toggleNode }) {
       {/* Samples count - improved visibility with brand typography */}
       <text
         x={0}
-        y={-nodeConfig.height / 2 + 46}
+        y={-nodeConfig.height / 2 + 48}
         textAnchor="middle"
-        fontFamily="'IBM Plex Mono', monospace"
-        fontSize={12}
+        fontFamily="'IBM Plex Mono', 'Courier New', monospace"
+        fontSize={11}
         fontWeight="600"
         fill={nodeConfig.samplesColor}
         style={{ pointerEvents: "none" }}
@@ -441,9 +438,9 @@ function renderNode({ nodeDatum, toggleNode }) {
       {score !== "" && (
         <text
           x={0}
-          y={-nodeConfig.height / 2 + 66}
+          y={-nodeConfig.height / 2 + 67}
           textAnchor="middle"
-          fontFamily="'IBM Plex Mono', monospace"
+          fontFamily="'IBM Plex Mono', 'Courier New', monospace"
           fontSize={11}
           fontWeight="600"
           fill={nodeConfig.scoreColor}
